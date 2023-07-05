@@ -124,8 +124,10 @@ const toggleInterestedOfferToUser = async (req, res, next) => {
     }
 
     const offerInUserOffersInterestedArray = await User.findOne({
+      _id: userId,
       offersInterested: offerId,
     });
+
     if (!offerInUserOffersInterestedArray) {
       await User.findByIdAndUpdate(userId, {
         $push: { offersInterested: offerId },
