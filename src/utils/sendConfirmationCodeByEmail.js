@@ -1,7 +1,7 @@
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 dotenv.config();
-const nodemailer = require('nodemailer');
-const { setTestEmailSend } = require('../state/state.data');
+const nodemailer = require("nodemailer");
+const { setTestEmailSend } = require("../state/state.data");
 
 const sendConfirmationCodeByEmail = (userEmail, name, confirmationCode) => {
   setTestEmailSend(false);
@@ -10,7 +10,7 @@ const sendConfirmationCodeByEmail = (userEmail, name, confirmationCode) => {
   const password = process.env.NODEMAILER_PASSWORD;
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
       user: email,
       pass: password,
@@ -20,7 +20,7 @@ const sendConfirmationCodeByEmail = (userEmail, name, confirmationCode) => {
   const mailOptions = {
     from: email,
     to: userEmail,
-    subject: 'Confirmation code',
+    subject: "Confirmation code",
     text: `Hola! Tu codigo es ${confirmationCode}, gracias por confiar en nosotros ${name}`,
   };
 
@@ -29,7 +29,7 @@ const sendConfirmationCodeByEmail = (userEmail, name, confirmationCode) => {
       console.log(error);
       setTestEmailSend(false);
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log("Email sent: " + info.response);
       setTestEmailSend(true);
     }
   });

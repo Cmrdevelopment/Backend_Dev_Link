@@ -1,13 +1,13 @@
 const User = require("../models/user.model");
 
-const { setError } = require("../../helpers/handle-error");
+//const { setError } = require("../../helpers/handle-error");
 
-const Ratings = require("../models/ratings.model");
+//const Ratings = require("../models/ratings.model");
 const Offer = require("../models/offer.model");
-const Experience = require("../models/experience.model");
+//const Experience = require("../models/experience.model");
 const Comment = require("../models/comment.model");
 const Chat = require("../models/chat.model");
-const { ObjectId } = require("mongodb");
+//const { ObjectId } = require("mongodb");
 
 //! -----------------------------------------------------------------------------
 //? ----------------------------CREATE-------------------------------------------
@@ -100,12 +100,10 @@ const newComment = async (req, res, next) => {
                   const userReal = await Offer.findById(
                     req.body.referenceOfferComment
                   ).populate("owner");
-                  console.log("userReal:", userReal);
                   await User.findByIdAndUpdate(userReal.owner[0]._id, {
                     $push: { commentsByOthers: newComment._id },
                   });
 
-                  console.log(userReal);
                   const userOne = req.user._id;
                   const userTwo = req.body.referenceUser
                     ? req.body.referenceUser
@@ -195,9 +193,10 @@ const newComment = async (req, res, next) => {
                     });
                     try {
                       const userOne = req.user._id;
-                      const userTwo = req.body.referenceUser
-                        ? req.body.referenceUser
-                        : userReal.owner[0]._id;
+                      const userTwo = req.body.referenceUser;
+                      // const userTwo = req.body.referenceUser
+                      //   ? req.body.referenceUser
+                      //   : userReal.owner[0]._id;
 
                       const chatExistOne = await Chat.findOne({
                         userOne,
@@ -301,7 +300,9 @@ const newComment = async (req, res, next) => {
     } catch (error) {
       return res.status(500).json(error.message);
     }
-  } catch (error) {}
+  } catch (error) {
+    return next(error);
+  }
 };
 
 // //! -----------------------------------------------------------------------------

@@ -1,11 +1,11 @@
 const { deleteImgCloudinary } = require("../../middleware/files.middleware");
 const randomCode = require("../../utils/randomCode");
-const sendConfirmationCodeByEmail = require("../../utils/sendConfirmationCodeByEmail");
+//const sendConfirmationCodeByEmail = require("../../utils/sendConfirmationCodeByEmail");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
 const User = require("../models/user.model");
-const { getTestEmailSend } = require("../../state/state.data");
+//const { getTestEmailSend } = require("../../state/state.data");
 const nodemailer = require("nodemailer");
 const { generateToken } = require("../../utils/token");
 const randomPassword = require("../../utils/randomPassword");
@@ -298,7 +298,9 @@ const changeForgottenPassword = async (req, res, next) => {
     } else {
       return res.status(404).json("User no register");
     }
-  } catch (error) {}
+  } catch (error) {
+    return next(error);
+  }
 };
 
 const sendPassword = async (req, res, next) => {
@@ -1102,6 +1104,7 @@ const updateUserRol = async (req, res, next) => {
 
     return res.status(200).json({ message: "User role updated successfully" });
   } catch (error) {
+    next(error);
     return res.status(500).json({ error: error.message });
   }
 };

@@ -1,10 +1,10 @@
 const User = require("../models/user.model");
 const Offer = require("../models/offer.model");
 const Ratings = require("../models/ratings.model");
-const PORT = process.env.PORT;
-const BASE_URL = process.env.BASE_URL;
-const BASE_URL_COMPLETE = `${BASE_URL}${PORT}`;
-const { ObjectId } = require("mongodb");
+//const PORT = process.env.PORT;
+//const BASE_URL = process.env.BASE_URL;
+//const BASE_URL_COMPLETE = `${BASE_URL}${PORT}`;
+//const { ObjectId } = require("mongodb");
 
 //! -----------------------------------------------------------------------
 //? -------------------------------CREATE RATING ---------------------------------
@@ -44,24 +44,29 @@ const create = async (req, res, next) => {
                   return res.status(200).json(savedRating);
                 }
               } catch (error) {
+                next(error);
                 return res
                   .status(404)
                   .json("error updating user reviews with him");
               }
             }
           } catch (error) {
+            next(error);
             return res.status(404).json("error updating referenceOffer model");
           }
         } catch (error) {
+          next(error);
           return res.status(404).json("error updating owner user rating ");
         }
       } else {
         return res.status(404).json("Error creating rating");
       }
     } catch (error) {
+      next(error);
       return res.status(404).json("error saving rating");
     }
   } catch (error) {
+    next(error);
     return res.status(500).json(error.message);
   }
 };
@@ -98,8 +103,10 @@ const deleteRating = async (req, res, next) => {
           await User.updateMany(
             { ratings: id },
             {
-              $pull: { ratingsByMe: id },
-              $pull: { ratingsByOthers: id },
+              $pull: {
+                ratingsByMe: id,
+                ratingsByOthers: id,
+              },
             }
           );
 

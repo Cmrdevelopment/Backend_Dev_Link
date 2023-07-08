@@ -1,16 +1,14 @@
 const User = require("../models/user.model");
-const Ratings = require("../models/ratings.model");
+//const Ratings = require("../models/ratings.model");
 const Comment = require("../models/comment.model");
 const Offer = require("../models/offer.model");
 const { OfferErrors } = require("../../helpers/jsonResponseMsgs");
 const { deleteImgCloudinary } = require("../../middleware/files.middleware");
 
-
 //! -----------------------------------------------------------------------
 //? -------------------------------CREATE OFFER ---------------------------------
 //! -----------------------------------------------------------------------
 const createOffer = async (req, res, next) => {
-  console.log(req.file);
   try {
     // const arrayTechnology = req.body.technologies.split(",");
 
@@ -63,6 +61,7 @@ const createOffer = async (req, res, next) => {
       return res.status(404).json("error saving offer");
     }
   } catch (error) {
+    next(error);
     return res.status(500).json(error.message);
   }
 };
@@ -106,6 +105,7 @@ const addInterestedOfferToUser = async (req, res, next) => {
       return res.status(404).json("error saving offer");
     }
   } catch (error) {
+    next(error);
     return res.status(500).json(error.message);
   }
 };
@@ -152,6 +152,7 @@ const toggleInterestedOfferToUser = async (req, res, next) => {
         .json("Offer removed from user's offersInterested array");
     }
   } catch (error) {
+    next(error);
     return res.status(500).json(error.message);
   }
 };
@@ -317,9 +318,8 @@ const updateOffer = async (req, res, next) => {
 //? -------------------------------DELETE OFFER ---------------------------------
 //! -----------------------------------------------------------------------
 const deleteOffer = async (req, res, next) => {
-
   console.log("deleteOffer: =>", deleteOffer);
-  
+
   try {
     const { id } = req.params;
     const deletedOffer = await Offer.findByIdAndDelete(id);
@@ -328,15 +328,15 @@ const deleteOffer = async (req, res, next) => {
       if (await Offer.findById(id)) {
         return res.status(404).json("failed deleting");
       } else {
-          if (deletedOffer.image) {console.log("image Existe");
-          
+        if (deletedOffer.image) {
+          console.log("image Existe");
+
           deleteImgCloudinary(deletedOffer.image);
-        
         } else {
           console.log("image NO existe");
         }
         // deleteImgCloudinary(deletedOffer.image);
-        
+
         try {
           await User.updateMany(
             { offersCreated: id },

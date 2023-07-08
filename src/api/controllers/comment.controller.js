@@ -62,6 +62,7 @@ const createComment = async (req, res, next) => {
       return res.status(404).json("error saving comment");
     }
   } catch (error) {
+    next(error);
     return res.status(500).json(error.message);
   }
 };
@@ -111,7 +112,9 @@ const deleteComment = async (req, res, next) => {
           deletedObject: deletedComment,
           message: CommentSuccess.SUCCESS_DELETING_COMMENT,
         });
-      } catch (error) {}
+      } catch (error) {
+        return next(error);
+      }
     } else {
       return res.status(404).json(CommentErrors.FAIL_DELETING_COMMENT);
     }
